@@ -20,10 +20,7 @@ def fps(img):
     global pTime
     fps_ = 1 / (cTime - pTime)
     pTime = cTime
-    cv2.putText(
-        img, f"FPS: {int(fps_)}", (480, 50), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 3
-    )
-
+    cv2.putText(img, f"FPS: {int(fps_)}", (480, 50), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 3)
 
 def print_on_frame(text):
     cv2.putText(frame, text, (15, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
@@ -45,43 +42,39 @@ while True:
         for hand_landmarks in results.multi_hand_landmarks:
 
             check_thumbs_up = False
+
             for finger_num, landmark in enumerate(hand_landmarks.landmark):
 
-                position_x, position_y = int(landmark.x * frame.shape[1]), int(
-                    landmark.y * frame.shape[0]
-                )
+                position_x, position_y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
 
                 if finger_num > 4 and landmark.y < hand_landmarks.landmark[2].y:
                     break
 
-                if finger_num == 20 and landmark.y > hand_landmarks.landmark[2].y:
+                elif finger_num == 20 and landmark.y > hand_landmarks.landmark[2].y:
                     check_thumbs_up = True
 
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-            index_finger_tip = hand_landmarks.landmark[
-                mp_hands.HandLandmark.INDEX_FINGER_TIP
-            ]
+            index_finger_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
             thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
 
-            x, y = int(index_finger_tip.x * frame.shape[1]), int(
-                index_finger_tip.y * frame.shape[0]
-            )
+            x, y = int(index_finger_tip.x * frame.shape[1]), int(index_finger_tip.y * frame.shape[0])
 
             dx = x - pos_x
             dy = y - pos_y
 
-            if dx > 5:
-                print_on_frame("LEFT")
-            elif dx < -5:
-                print_on_frame("RIGHT")
-            elif dy > 5:
-                print_on_frame("DOWN")
-            elif dy < -5:
-                print_on_frame("UP")
-                
             if check_thumbs_up:
                 print_on_frame("THUMBS UP")
+
+            else:
+                if dx > 20:
+                    print_on_frame("LEFT")
+                elif dx < -20:
+                    print_on_frame("RIGHT")
+                elif dy > 20:
+                    print_on_frame("DOWN")
+                elif dy < -20:
+                    print_on_frame("UP")
 
             pos_x, pos_y = x, y
 
