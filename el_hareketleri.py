@@ -80,7 +80,7 @@ while True:
             elif dy < -5:
                 print_on_frame("UP")
                 
-            elif check_thumbs_up:
+            if check_thumbs_up:
                 print_on_frame("THUMBS UP")
 
             pos_x, pos_y = x, y
